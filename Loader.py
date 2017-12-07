@@ -11,9 +11,11 @@ class meshPlot:
     Class that contains information about the mesh of the data loaded
     '''
 
-    def __init__(self, InPath, Mov=False):
+    def __init__(self, InPath, Plot1D=True, PlotTemporal=False, Mov=False):
 
         self.key = 'SF' # The prefix of the files names
+        self.PlotTemporal = PlotTemporal
+        self.Plot1D = Plot1D
 
         _dim, _dt, _dh, _N, _lim = self.load_parameters()
         self.dim = _dim
@@ -81,18 +83,19 @@ class meshPlot:
         if self.dim != 1:
             raise IndexError('The current version only allow loading 1D data-files')
 
-        PlotPath = 'Plot_' + InPath.split('/')[-1]
-        print( 'Directory to Save Plots: ' + str(PlotPath))
-        if not os.path.exists(PlotPath):
-            os.makedirs(PlotPath)
-        else: # This allows that files never get overwriten
-            i = 1
-            NewPlotPath = PlotPath
-            while os.path.exists(NewPlotPath):
-                NewPlotPath = PlotPath + '_' + str(i)
-                i+=1
-            PlotPath = NewPlotPath
-            os.makedirs(PlotPath)
+        if self.Plot1D:
+            PlotPath = 'Plot_' + InPath.split('/')[-1]
+            print( 'Directory to Save Plots: ' + str(PlotPath))
+            if not os.path.exists(PlotPath):
+                os.makedirs(PlotPath)
+            else: # This allows that files never get overwriten
+                i = 1
+                NewPlotPath = PlotPath
+                while os.path.exists(NewPlotPath):
+                    NewPlotPath = PlotPath + '_' + str(i)
+                    i+=1
+                PlotPath = NewPlotPath
+                os.makedirs(PlotPath)
 
         List_Files = []
 
@@ -104,28 +107,31 @@ class meshPlot:
         max_value = 0
         Extent = [0, self.Nx * self.dx, 0, 0]
 
-        for i in np.arange(0, len(List_Files)):
-            envelope = self.load_envelope(InPath + '/' + List_Files[i][0])
+        if self.Plot1D:
+            for i in np.arange(0, len(List_Files)):
+                envelope = self.load_envelope(InPath + '/' + List_Files[i][0])
 
-             # Does the little trick to keep the Y axis constant along the movie!
-            if i == 0:
-                max_value = np.max(np.abs(envelope) ** 2)
-            envelope[0] = max_value
+                 # Does the little trick to keep the Y axis constant along the movie!
+                if i == 0:
+                    max_value = np.max(np.abs(envelope) ** 2)
+                envelope[0] = max_value
 
-            # ----------- Data to Perfetct Plot!!! -----------
-            t = self.dt * List_Files[i][1]
-            pl.title('Test and Change Latter')
+                # ----------- Data to Perfetct Plot!!! -----------
+                t = self.dt * List_Files[i][1]
+                pl.title('Test and Change Latter')
 
-            pl.plot(np.linspace(Extent[0], Extent[1], self.Nx), np.abs(envelope) ** 2 )
-            pl.xlabel('X')
-            pl.ylabel('Y')
+                pl.plot(np.linspace(Extent[0], Extent[1], self.Nx), np.abs(envelope) ** 2 )
+                pl.xlabel('X')
+                pl.ylabel('Y')
 
-            pl.savefig(PlotPath + '/image%.2f.png' % i, format='png', dpi=300)
-            filenames.append(PlotPath + '/image%.2f.png' % i)
-            pl.clf()
-            print('Envelope %i out of %i saved' % (i+1, len(List_Files)))
+                pl.savefig(PlotPath + '/image%.2f.png' % i, format='png', dpi=300)
+                filenames.append(PlotPath + '/image%.2f.png' % i)
+                pl.clf()
+                print('Envelope %i out of %i saved' % (i+1, len(List_Files)))
 
         if DoMovie:
+            if self.Plot1D == False:
+                raise AttributeError('You can not do the movie without plot the data')
             print('Making the movie...')
             Movie_folder = "Movie/"
             if not os.path.exists(Movie_folder):
@@ -137,7 +143,44 @@ class meshPlot:
                     str(now.now().hour) + str(now.now().minute)+str(now.now().second) + \
                     "_movie.mkv", images, fps=20)
             print('Complete!')
+
+        if self.PlotTemporal:
+            print('Doing the 2D Temporal Plot Graph.')
+            # For now, it will be saved in the movie folder. Latter can be changed
+            Movie_folder = "Movie/"
+            if not os.path.exists(Movie_folder):
+                os.makedirs(Movie_folder)
+
+            TemporalData = np.zeros(( len(List_Files), self.Nx ))
+
+            for i in np.arange(0, len(List_Files)):
+                envelope = self.load_envelope(InPath + '/' + List_Files[i][0])
+
+                # Does the little trick to keep the Y axis constant along the movie!
+                if i == 0:
+                    max_value = np.max(np.abs(envelope) ** 2)
+                envelope[0] = max_value
+
+                TemporalData[i, :] = np.abs(envelope)**2
+                print('Envelope %i out of %i loaded' % (i + 1, len(List_Files)))
+
+            pl.figure()
+            xaxis = np.linspace(0, self.Nx * self.dx, self.Nx)
+            yaxis = np.linspace(0, len(List_Files) * self.dt, len(TemporalData[:,0]))
+            pl.pcolormesh(xaxis, yaxis, TemporalData, cmap='inferno')
+            pl.xlim(xaxis[0], xaxis[-1])
+            pl.ylim(yaxis[0], yaxis[-1])
+
+            pl.title('Simple 2D plot')
+            pl.xlabel('Section-Cut')
+            pl.ylabel('Propagated Distance')
+
+            # The temporal graph is overriding if a previous is present!
+            pl.savefig(Movie_folder + '/TemporalPropagation.png', format='png', dpi=500)
+            pl.close()
         return 0
 
+
+# 1 simple example of usage of the class
 InPath = 'Data'
-loader = meshPlot(InPath, Mov = True)
+loader = meshPlot(InPath, Plot1D=False, PlotTemporal=True, Mov =False)
