@@ -79,6 +79,42 @@ To run this Loader one need to have installed various modules:
 * \sphinxstyleemphasis{MatPlotLib}
 * \sphinxstyleemphasis{ImageIO}
 * \sphinxstyleemphasis{DateTime}
+\index{meshPlot (class in Loader)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:Loader.meshPlot}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{Loader.}\sphinxbfcode{meshPlot}}{\emph{InPath}, \emph{Plot1D=True}, \emph{PlotSlices=False}, \emph{PlotTemporal=False}, \emph{Mov=False}}{}
+Class that contains information about the mesh of the data loaded
+\index{load\_envelope() (Loader.meshPlot method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:Loader.meshPlot.load_envelope}}\pysiglinewithargsret{\sphinxbfcode{load\_envelope}}{\emph{filename}}{}
+Function to load the file in ArrayFire format and convert it to
+an array of NumPy format.
+
+\end{fulllineitems}
+
+\index{load\_parameters() (Loader.meshPlot method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:Loader.meshPlot.load_parameters}}\pysiglinewithargsret{\sphinxbfcode{load\_parameters}}{}{}
+Reads the file with parameters of the simulation and returns a set
+of data in the following order:
+dimentions, time step, number of points, vector limits
+
+\end{fulllineitems}
+
+\index{plot\_sequence() (Loader.meshPlot method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:Loader.meshPlot.plot_sequence}}\pysiglinewithargsret{\sphinxbfcode{plot\_sequence}}{\emph{InPath}, \emph{DoMovie}}{}
+Function to plot the set of saved data with the matplotlib
+plot functions. This makes the output beautiful!!!
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
 
 
 

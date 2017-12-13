@@ -18,10 +18,10 @@ To run this Loader one need to have installed various modules:
 * *ImageIO*
 * *DateTime*
 
-   
-.. autoclass:: meshPlot
-	:members:
-	
 .. toctree::
    :maxdepth: 2
+   
+.. autoclass:: Loader.meshPlot
+	:members:
+
 	
