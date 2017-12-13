@@ -1,6 +1,7 @@
 import numpy as np
 import arrayfire as af
 import matplotlib.pyplot as pl
+from mpl_toolkits.mplot3d import axes3d
 import os
 import imageio as imo
 from datetime import datetime as now
@@ -11,11 +12,12 @@ class meshPlot:
     Class that contains information about the mesh of the data loaded
     '''
 
-    def __init__(self, InPath, Plot1D=True, PlotTemporal=False, Mov=False):
+    def __init__(self, InPath, Plot1D=True, PlotSlices=False, PlotTemporal=False, Mov=False):
 
         self.key = 'SF' # The prefix of the files names
         self.PlotTemporal = PlotTemporal
         self.Plot1D = Plot1D
+        self.PlotSlices = PlotSlices
 
         _dim, _dt, _dh, _N, _lim = self.load_parameters()
         self.dim = _dim
@@ -83,7 +85,7 @@ class meshPlot:
         if self.dim != 1:
             raise IndexError('The current version only allow loading 1D data-files')
 
-        if self.Plot1D:
+        if self.Plot1D or self.PlotSlices:
             PlotPath = 'Plot_' + InPath.split('/')[-1]
             print( 'Directory to Save Plots: ' + str(PlotPath))
             if not os.path.exists(PlotPath):
@@ -128,6 +130,33 @@ class meshPlot:
                 filenames.append(PlotPath + '/image%.2f.png' % i)
                 pl.clf()
                 print('Envelope %i out of %i saved' % (i+1, len(List_Files)))
+
+        if self.PlotSlices:
+
+            # For now, it will be saved in the movie folder. Latter can be changed
+            Movie_folder = "Movie/"
+            if not os.path.exists(Movie_folder):
+                os.makedirs(Movie_folder)
+
+            fig = pl.figure()
+            ax = fig.gca(projection='3d')
+
+            for i in np.arange(0, len(List_Files)):
+                envelope = self.load_envelope(InPath + '/' + List_Files[i][0])
+
+                # ----------- Data to Perfetct Plot!!! -----------
+                t = self.dt * List_Files[i][1]
+
+                xs = np.linspace(Extent[0], Extent[1], self.Nx)
+                ys = np.ones(len(envelope)) * t
+                zs = np.abs(envelope) ** 2
+                ax.plot(xs, ys, zs, color='black')
+
+                print('Envelope %i out of %i ploted' % (i+1, len(List_Files)))
+
+            pl.show() # It will stop here until I close the graph!
+            # Manual save has to be performed because one can rotate the graph to a
+            # defined position!!
 
         if DoMovie:
             if self.Plot1D == False:
@@ -183,4 +212,4 @@ class meshPlot:
 
 # 1 simple example of usage of the class
 InPath = 'Data'
-loader = meshPlot(InPath, Plot1D=False, PlotTemporal=True, Mov =False)
+loader = meshPlot(InPath, Plot1D=False, PlotSlices=True, PlotTemporal=False, Mov =False)
