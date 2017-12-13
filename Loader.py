@@ -13,7 +13,6 @@ class meshPlot:
     '''
 
     def __init__(self, InPath, Plot1D=True, PlotSlices=False, PlotTemporal=False, Mov=False):
-
         self.key = 'SF' # The prefix of the files names
         self.PlotTemporal = PlotTemporal
         self.Plot1D = Plot1D
@@ -210,6 +209,7 @@ class meshPlot:
         return 0
 
 
-# 1 simple example of usage of the class
-InPath = 'Data'
-loader = meshPlot(InPath, Plot1D=False, PlotSlices=True, PlotTemporal=False, Mov =False)
+if __name__ == '__main__':
+    # 1 simple example of usage of the class
+    InPath = 'Data'
+    loader = meshPlot(InPath, Plot1D=False, PlotSlices=True, PlotTemporal=False, Mov =False)

@@ -6,15 +6,22 @@
 Welcome to Loader Plotter's documentation!
 ==========================================
 
+This is a auto-generated documentation of the Loader-Plotter produced.
+The main objective of this loader is to grab the Data from ArrayFire format files and a designated folder. With that and the class requirements, it loads the data to *Numpy* arrays so that it can Plot Surface, Plot 3D and Construct Movies.
+
+Requirements:
+
+To run this Loader one need to have installed various modules:
+* *Numpy*
+* *ArrayFire*
+* *MatPlotLib*
+* *ImageIO*
+* *DateTime*
+
+   
+.. autoclass:: meshPlot
+	:members:
+	
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+	
