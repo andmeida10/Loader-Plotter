@@ -9,10 +9,27 @@ from datetime import datetime as now
 
 class meshPlot:
     '''
-    Class that contains information about the mesh of the data loaded
+    Class that contains information about the mesh of the data loaded.
+
+    Only works with ArrayFire file format in the following protocol: SF_XXXX.af
+    :: For different suffix and prefix the *load_parameters()* has to be changed
+
+    At the moment it only has the hability to process 1D input data and turn them in a 2D (or semi-3D) output figure/movie.
+
+    The format of movie/figures can be altered in the specific function, namely *plot_sequence(InPath)*
+
+    **The Initializer does**
+    Initiate the object to proceed with the data loading and dump them in a specific requeired format as output.
+
+    :param InPath: The relative path where the group of ArrayFire data is located.
+    :param Plot1D: A Boolean parameter to inform the class if the user wants the set of input data to be converted to a 2D plot.
+    :param PlotSlices: A Boolean parameter to inform the class if the user wants a Semi-3D plot of the group data available in the InPath folder.
+    :param PlotTemporal: A Boolean parameter to inform the class if the user wants a output in the 2D color-contrast mode graph (pcolor/imshow format)
+    :param Mov: A simple Boolean to inform the class if the user wants a final video of the movement to be rendered.
     '''
 
     def __init__(self, InPath, Plot1D=True, PlotSlices=False, PlotTemporal=False, Mov=False):
+
         self.key = 'SF' # The prefix of the files names
         self.PlotTemporal = PlotTemporal
         self.Plot1D = Plot1D
@@ -39,7 +56,9 @@ class meshPlot:
         '''
         Reads the file with parameters of the simulation and returns a set
         of data in the following order:
-        dimentions, time step, number of points, vector limits
+        :: Dimensions, Time Step, Spatial Step, Number of Points, Vector Limits
+
+        No arguments must be passed and a file *parameters.dat* in a defined protocol format has to exists with accurate mesh information
         '''
         f = open("parameters.dat", 'r')
 
@@ -67,8 +86,10 @@ class meshPlot:
 
     def load_envelope(self, filename):
         '''
-         Function to load the file in ArrayFire format and convert it to
-         an array of NumPy format.
+         Function to load the file in ArrayFire format (*.af*) and convert it to
+         a 1D Array in the NumPy format so it can be handled and plotted.
+
+         :param filename: The file name of the ArrayFire format file to load and convert to *Numpy* Array format.
         '''
         data_af = af.array.read_array(filename, key=self.key)
         return np.array(data_af, order='F')
@@ -77,6 +98,9 @@ class meshPlot:
         '''
         Function to plot the set of saved data with the matplotlib
         plot functions. This makes the output beautiful!!!
+
+        :param InPath: String value indicating the relative path of all *ArrayFire* (*.af*) files containing the data computed by the GPU
+        :param DoMovie: Simple Boolean variable indicating if the user pretends a final Movie to be rendered. (typical fps can be changed in the source code)
         '''
 
         filenames = [] # To make the movie at the end

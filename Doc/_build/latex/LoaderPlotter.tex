@@ -64,8 +64,8 @@
 \begin{document}
 
 \maketitle
-\sphinxtableofcontents
-\phantomsection\label{\detokenize{index::doc}}
+%\sphinxtableofcontents
+%\phantomsection\label{\detokenize{index::doc}}
 
 
 This is a auto-generated documentation of the Loader-Plotter produced.
@@ -83,13 +83,48 @@ To run this Loader one need to have installed various modules:
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{index:Loader.meshPlot}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{Loader.}\sphinxbfcode{meshPlot}}{\emph{InPath}, \emph{Plot1D=True}, \emph{PlotSlices=False}, \emph{PlotTemporal=False}, \emph{Mov=False}}{}
-Class that contains information about the mesh of the data loaded
+Class that contains information about the mesh of the data loaded.
+
+Only works with ArrayFire file format in the following protocol: SF\_XXXX.af
+:: For different suffix and prefix the \sphinxstyleemphasis{load\_parameters()} has to be changed
+
+At the moment it only has the hability to process 1D input data and turn them in a 2D (or semi-3D) output figure/movie.
+
+The format of movie/figures can be altered in the specific function, namely \sphinxstyleemphasis{plot\_sequence(InPath)}
+
+\sphinxstylestrong{The Initializer does}
+Initiate the object to proceed with the data loading and dump them in a specific requeired format as output.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{InPath} \textendash{} The relative path where the group of ArrayFire data is located.
+
+\item {} 
+\sphinxstyleliteralstrong{Plot1D} \textendash{} A Boolean parameter to inform the class if the user wants the set of input data to be converted to a 2D plot.
+
+\item {} 
+\sphinxstyleliteralstrong{PlotSlices} \textendash{} A Boolean parameter to inform the class if the user wants a Semi-3D plot of the group data available in the InPath folder.
+
+\item {} 
+\sphinxstyleliteralstrong{PlotTemporal} \textendash{} A Boolean parameter to inform the class if the user wants a output in the 2D color-contrast mode graph (pcolor/imshow format)
+
+\item {} 
+\sphinxstyleliteralstrong{Mov} \textendash{} A simple Boolean to inform the class if the user wants a final video of the movement to be rendered.
+
+\end{itemize}
+
+\end{description}\end{quote}
 \index{load\_envelope() (Loader.meshPlot method)}
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{index:Loader.meshPlot.load_envelope}}\pysiglinewithargsret{\sphinxbfcode{load\_envelope}}{\emph{filename}}{}
-Function to load the file in ArrayFire format and convert it to
-an array of NumPy format.
+Function to load the file in ArrayFire format (\sphinxstyleemphasis{.af}) and convert it to
+a 1D Array in the NumPy format so it can be handled and plotted.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{filename} \textendash{} The file name of the ArrayFire format file to load and convert to \sphinxstyleemphasis{Numpy} Array format.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -99,7 +134,9 @@ an array of NumPy format.
 \phantomsection\label{\detokenize{index:Loader.meshPlot.load_parameters}}\pysiglinewithargsret{\sphinxbfcode{load\_parameters}}{}{}
 Reads the file with parameters of the simulation and returns a set
 of data in the following order:
-dimentions, time step, number of points, vector limits
+:: Dimensions, Time Step, Spatial Step, Number of Points, Vector Limits
+
+No arguments must be passed and a file \sphinxstyleemphasis{parameters.dat} in a defined protocol format has to exists with accurate mesh information
 
 \end{fulllineitems}
 
@@ -109,6 +146,17 @@ dimentions, time step, number of points, vector limits
 \phantomsection\label{\detokenize{index:Loader.meshPlot.plot_sequence}}\pysiglinewithargsret{\sphinxbfcode{plot\_sequence}}{\emph{InPath}, \emph{DoMovie}}{}
 Function to plot the set of saved data with the matplotlib
 plot functions. This makes the output beautiful!!!
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{InPath} \textendash{} String value indicating the relative path of all \sphinxstyleemphasis{ArrayFire} (\sphinxstyleemphasis{.af}) files containing the data computed by the GPU
+
+\item {} 
+\sphinxstyleliteralstrong{DoMovie} \textendash{} Simple Boolean variable indicating if the user pretends a final Movie to be rendered. (typical fps can be changed in the source code)
+
+\end{itemize}
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 

@@ -153,8 +153,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'LoaderPlotter', 'Loader Plotter Documentation',
-     author, 'LoaderPlotter', 'One line description of project.',
-     'Miscellaneous'),
+     author, 'LoaderPlotter', 'One line description of project.'),
 ]
 
 
